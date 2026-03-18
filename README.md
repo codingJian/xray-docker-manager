@@ -2,7 +2,7 @@
 
 ![Bash](https://img.shields.io/badge/Language-Bash-4EAA25?style=for-the-badge&logo=gnu-bash&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Supported-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-blue.style=for-the-badge)
+![License](https://img.shields.io/badge/License-AGPL%20v3-blue?style=for-the-badge)
 
 > A smart, multi-instance Docker manager for Xray REALITY (VLESS+Vision).
 > 基于 Docker 的 Xray REALITY (VLESS) 多实例智能管理脚本，支持一键部署、修改参数与无缝热更新。
@@ -22,4 +22,4 @@
 请确保您的服务器为 Linux 系统（推荐 Ubuntu/Debian），并使用 `root` 用户登录。执行以下命令即可启动交互式管理面板：
 
 ```bash
-bash <(curl -sL [https://raw.githubusercontent.com/codingjian/xray-docker-manager/main/install.sh](https://raw.githubusercontent.com/codingjian/xray-docker-manager/main/install.sh))
+bash <(curl -sL https://raw.githubusercontent.com/codingJian/xray-docker-manager/main/install.sh)
