@@ -23,22 +23,28 @@ deploy_instance_core() {
     
     # 检查并生成密钥
     if [ ! -f "$KEY_FILE" ]; then
+        # 提前静默拉取，防止 Docker 进度条污染输出
+        echo -e "${CYAN}正在准备环境，拉取 Xray 核心镜像...${RESET}"
+        docker pull ghcr.io/xtls/xray-core:latest &>/dev/null
+
         echo -e "${CYAN}正在生成新的 UUID 和 x25519 密钥对...${RESET}"
-        UUID=$(docker run --rm ghcr.io/xtls/xray-core uuid)
-        KEYS=$(docker run --rm ghcr.io/xtls/xray-core x25519)
-        PRIVATE_KEY=$(echo "$KEYS" | grep "Private key:" | awk '{print $3}')
-        PUBLIC_KEY=$(echo "$KEYS" | grep "Public key:" | awk '{print $3}')
+        UUID=$(docker run --rm ghcr.io/xtls/xray-core uuid | tr -d '\r')
+        KEYS=$(docker run --rm ghcr.io/xtls/xray-core x25519 | tr -d '\r')
         
-        echo "UUID: $UUID" > "$KEY_FILE"
-        echo "Private key: $PRIVATE_KEY" >> "$KEY_FILE"
-        echo "Public key: $PUBLIC_KEY" >> "$KEY_FILE"
+        echo "UUID（用户标识）:" > "$KEY_FILE"
+        echo "$UUID" >> "$KEY_FILE"
+        echo "x25519 密钥:" >> "$KEY_FILE"
+        echo "$KEYS" >> "$KEY_FILE"
     fi
     
-    # 读取密钥
-    local UUID=$(grep "UUID" "$KEY_FILE" | awk '{print $2}')
-    local PRIVATE_KEY=$(grep "Private key" "$KEY_FILE" | awk '{print $3}')
-    local PUBLIC_KEY=$(grep "Public key" "$KEY_FILE" | awk '{print $3}')
-
+    # 同时支持 Xray 新/老版本，支持任何排版模版
+    # 使用纯正则精准抓取 UUID
+    local UUID=$(grep -oE "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" "$KEY_FILE" | head -n 1)
+    # 兼容 Private key: 和 PrivateKey: ($NF 代表取最后一段)
+    local PRIVATE_KEY=$(grep -E "Private key:|PrivateKey:" "$KEY_FILE" | awk '{print $NF}' | tr -d '\r')
+    # 兼容 Public key: 和 Password:
+    local PUBLIC_KEY=$(grep -E "Public key:|Password:" "$KEY_FILE" | awk '{print $NF}' | tr -d '\r')
+    
     # 保存环境参数供日后读取
     cat > "$ENV_FILE" <<EOF
 PORT=$PORT
@@ -194,8 +200,8 @@ show_client_info() {
     fi
 
     source "$ENV_FILE"
-    local UUID=$(grep "UUID" "$KEY_FILE" | awk '{print $2}')
-    local PUBLIC_KEY=$(grep "Public key" "$KEY_FILE" | awk '{print $3}')
+    local UUID=$(grep -oE "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" "$KEY_FILE" | head -n 1)
+    local PUBLIC_KEY=$(grep -E "Public key:|Password:" "$KEY_FILE" | awk '{print $NF}' | tr -d '\r')
     local IP=$(get_public_ip)
 
     echo ""
