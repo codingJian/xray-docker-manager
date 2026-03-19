@@ -19,7 +19,7 @@ deploy_instance_core() {
     mkdir -p "$WORK_DIR"
     # 日志目录与权限管理
     mkdir -p "$WORK_DIR/logs"
-    chown 65534:65534 "$WORK_DIR/logs"  # 解决容器内 nobody 用户的写入权限问题
+    chmod 777 "$WORK_DIR/logs"  # 解决容器内 nobody 用户的写入权限问题
     
     # 检查并生成密钥
     if [ ! -f "$KEY_FILE" ]; then
