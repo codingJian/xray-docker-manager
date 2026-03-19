@@ -46,9 +46,11 @@ if [ ! -f "$SHORTCUT_PATH" ]; then
     echo -e "\033[36m正在为您创建快捷命令 'xray-manager'...\033[0m"
     cat > "$SHORTCUT_PATH" << 'EOF'
 #!/bin/bash
-# 检查本地菜单文件是否存在
-if [ -f "/opt/xray-manager/scripts/menu.sh" ]; then
-    bash /opt/xray-manager/scripts/menu.sh
+export LOCAL_DIR="/opt/xray-manager"
+if [ -f "${LOCAL_DIR}/scripts/menu.sh" ]; then
+    source "${LOCAL_DIR}/scripts/core.sh"
+    source "${LOCAL_DIR}/scripts/menu.sh"
+    show_main_menu
 else
     echo -e "\033[31m❌ 找不到面板核心文件，请重新运行一键安装脚本。\033[0m"
 fi
