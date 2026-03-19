@@ -29,7 +29,13 @@ show_main_menu() {
             3) manage_firewall_menu ;;     # 函数定义在 firewall.sh
             4) enable_bbr ;;               # 函数定义在 bbr.sh
             5) echo "开发中..." ; sleep 2 ;;
-            6) echo "开发中..." ; sleep 2 ;;
+            6) uninstall_all ;;
+            7)  # 更新面板逻辑
+               clear
+               echo -e "${CYAN}正在拉取最新版本的面板代码...${RESET}"
+               bash <(curl -fsSL https://raw.githubusercontent.com/codingJian/xray-docker-manager/main/install.sh)
+               exit 0
+               ;;
             0) echo -e "${CYAN}感谢使用，再见！${RESET}"; exit 0 ;;
             *) echo -e "${RED}无效输入！${RESET}"; sleep 1 ;;
         esac

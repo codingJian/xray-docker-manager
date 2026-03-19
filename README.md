@@ -22,4 +22,4 @@
 请确保您的服务器为 Linux 系统（推荐 Ubuntu/Debian），并使用 `root` 用户登录。执行以下命令即可启动交互式管理面板：
 
 ```bash
-bash <(curl -sL https://raw.githubusercontent.com/codingJian/xray-docker-manager/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/codingJian/xray-docker-manager/main/install.sh)
